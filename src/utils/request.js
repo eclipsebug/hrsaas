@@ -2,7 +2,9 @@ import axios from 'axios'
 import { Message } from 'element-ui'
 
 const request = axios.create({
-  baseURL: process.env['VUE_APP_BASE_API'] // 基本地址
+  // baseURL: process.env['VUE_APP_BASE_API'] // 基本地址
+  baseURL: '/api' // 基本地址
+
 }) // 创建axios实例
 
 // 请求拦截器

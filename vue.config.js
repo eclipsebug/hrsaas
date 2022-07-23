@@ -1,6 +1,6 @@
 'use strict'
 const path = require('path')
-const defaultSettings = require('./src/settings.js')
+const defaultSettings = require('./src/settings.js') // 标题
 
 function resolve(dir) {
   return path.join(__dirname, dir)
@@ -41,6 +41,7 @@ module.exports = {
       // 当我们的本地的请求 有/api的时候，就会代理我们的请求地址向另外一个服务器发出请求
       '/api': {
         target: 'http://42.192.129.12:3001', // 跨域请求的地址
+        // target: 'http://liufusong.top:8899/api/private/v1', // 跨域请求的地址
         changeOrigin: true // 只有这个值为true的情况下 才表示开启跨域
       }
     }
