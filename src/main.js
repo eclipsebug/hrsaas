@@ -26,8 +26,8 @@ import * as directives from '@/directives/index'
  */
 
 for (const key in directives) {
-  // 注册指令
-  Vue.directive(key, directives[key])
+	// 注册指令
+	Vue.directive(key, directives[key])
 }
 
 /**
@@ -39,20 +39,20 @@ for (const key in directives) {
  * please remove it before going online ! ! !
  */
 if (process.env.NODE_ENV === 'production') {
-  const { mockXHR } = require('../mock')
-  mockXHR()
+	const { mockXHR } = require('../mock')
+	mockXHR()
 }
 
 // set ElementUI lang to EN
-Vue.use(ElementUI, { locale })
+// Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
-// Vue.use(ElementUI)
+Vue.use(ElementUI)
 
 Vue.config.productionTip = false
 
 new Vue({
-  el: '#app',
-  router,
-  store,
-  render: h => h(App)
+	el: '#app',
+	router,
+	store,
+	render: h => h(App)
 })
