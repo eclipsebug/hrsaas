@@ -4,7 +4,7 @@ import 'normalize.css/normalize.css' // A modern alternative to CSS resets
 
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-import locale from 'element-ui/lib/locale/lang/en' // lang i18n
+// import locale from 'element-ui/lib/locale/lang/en' // lang i18n
 
 import '@/styles/index.scss' // global css
 
@@ -26,9 +26,13 @@ import * as directives from '@/directives/index'
  */
 
 for (const key in directives) {
-	// 注册指令
-	Vue.directive(key, directives[key])
+  // 注册指令
+  Vue.directive(key, directives[key])
 }
+
+import ToolBar from '@/components/ToolBar/index'
+
+Vue.use(ToolBar)
 
 /**
  * If you don't want to use mock-server
@@ -39,8 +43,8 @@ for (const key in directives) {
  * please remove it before going online ! ! !
  */
 if (process.env.NODE_ENV === 'production') {
-	const { mockXHR } = require('../mock')
-	mockXHR()
+  const { mockXHR } = require('../mock')
+  mockXHR()
 }
 
 // set ElementUI lang to EN
@@ -51,8 +55,8 @@ Vue.use(ElementUI)
 Vue.config.productionTip = false
 
 new Vue({
-	el: '#app',
-	router,
-	store,
-	render: h => h(App)
+  el: '#app',
+  router,
+  store,
+  render: h => h(App)
 })
