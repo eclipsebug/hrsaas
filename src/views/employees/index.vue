@@ -6,7 +6,7 @@
           <span>1000</span>
         </template>
         <template #after>
-          <el-button size="mini" type="primary">导入</el-button>
+          <el-button size="mini" type="primary" @click="$router.push('/import')">导入</el-button>
           <el-button size="mini" type="danger">导出</el-button>
           <el-button size="mini" type="warning" @click="showDialog=true">新增员工</el-button>
         </template>

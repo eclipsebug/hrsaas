@@ -12,16 +12,16 @@ import settingRouter from './modules/setting'
 import socialRouter from './modules/social'
 
 // 动态路由
-//{path:'/approvalsRouter',children:{}}
+// {path:'/approvalsRouter',children:{}}
 export const asyncRoutes = [
-	approvalsRouter,
-	departmentsRouter,
-	employeesRouter,
-	permissionRouter,
-	attendancesRouter,
-	salarysRouter,
-	settingRouter,
-	socialRouter
+  approvalsRouter,
+  departmentsRouter,
+  employeesRouter,
+  permissionRouter,
+  attendancesRouter,
+  salarysRouter,
+  settingRouter,
+  socialRouter
 ]
 
 Vue.use(Router)
@@ -54,46 +54,52 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [
-	{
-		path: '/login',
-		component: () => import('@/views/login/index'),
-		hidden: true
-	},
-	
-	{
-		path: '/404',
-		component: () => import('@/views/404'),
-		hidden: true
-	},
-	
-	{
-		path: '/',
-		component: Layout,
-		redirect: '/dashboard',
-		children: [{
-			path: 'dashboard',
-			name: 'Dashboard',
-			component: () => import('@/views/dashboard/index'),
-			meta: { title: '首页', icon: 'dashboard' }
-		}]
-	},
-	// 404 page must be placed at the end !!!
-	{ path: '*', redirect: '/404', hidden: true }
+  {
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+
+  {
+    path: '/404',
+    component: () => import('@/views/404'),
+    hidden: true
+  },
+
+  {
+    path: '/',
+    component: Layout,
+    redirect: '/dashboard',
+    children: [{
+      path: 'dashboard',
+      name: 'Dashboard',
+      component: () => import('@/views/dashboard/index'),
+      meta: { title: '首页', icon: 'dashboard' }
+    },
+    {
+      path: 'import',
+      component: () => import('@/views/import'),
+      hidden: true // 隐藏在左侧菜单中
+    }
+    ]
+  },
+  // 404 page must be placed at the end !!!
+  { path: '*', redirect: '/404', hidden: true }
 ]
 
 const createRouter = () => new Router({
-	// mode: 'history', // require service support
-	scrollBehavior: () => ({ y: 0 }),
-	//将动态路由和静态路由合并
-	routes: [...constantRoutes, ...asyncRoutes]
+  // mode: 'history', // require service support
+  scrollBehavior: () => ({ y: 0 }),
+  // 将动态路由和静态路由合并
+  routes: [...constantRoutes, ...asyncRoutes]
 })
 
 const router = createRouter()
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {
-	const newRouter = createRouter()
-	router.matcher = newRouter.matcher // reset router
+  const newRouter = createRouter()
+  router.matcher = newRouter.matcher // reset router
 }
 
 export default router

@@ -98,6 +98,18 @@ export default {
     close() {
       // 父组件 通过.sync修饰符 传递下来一个update事件 ，子组件可以修改父组件里面的值
       this.$emit('update:isShowDialog', false)
+      //  重置表单
+      this.$refs.formRef.resetFields()
+      //  重置数据
+      this.formData = {
+        username: '', // 用户姓名
+        mobile: '', // 手机号
+        formOfEmployment: '', // 聘用形式
+        workNumber: '', // 工号
+        departmentName: '', // 部门名称
+        timeOfEntry: '', // 入职时间
+        correctionTime: '' // 转正时间
+      }
     },
     async getEmployeeList() {
       const { depts } = await getDepartments()

@@ -34,6 +34,15 @@ import ToolBar from '@/components/ToolBar/index'
 
 Vue.use(ToolBar)
 
+// import PageTools from './PageTools'
+import uploadExcel from '@/components/UploadExcel'
+
+export default {
+  install(Vue) {
+    // Vue.component('PageTools', PageTools) // 注册工具栏组件
+    Vue.component('UploadExcel', uploadExcel) // 注册导入excel组件
+  }
+}
 // 引入过滤器
 import * as filters from '@/filters/index.js'
 
