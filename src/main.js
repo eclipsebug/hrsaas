@@ -35,11 +35,16 @@ import ToolBar from '@/components/ToolBar/index'
 Vue.use(ToolBar)
 
 // 引入过滤器
-import * as filters from '@/filters'
+import * as filters from '@/filters/index.js'
 
-Object.keys(filters).forEach(key => {
+// 注册使用
+// Object.keys(filters).forEach(key => {
+//   Vue.filter(key, filters[key])
+// })
+
+for (const key in filters) {
   Vue.filter(key, filters[key])
-})
+}
 
 /**
  * If you don't want to use mock-server

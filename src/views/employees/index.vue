@@ -8,7 +8,7 @@
         <template #after>
           <el-button size="mini" type="primary">导入</el-button>
           <el-button size="mini" type="danger">导出</el-button>
-          <el-button size="mini" type="warning">新增员工</el-button>
+          <el-button size="mini" type="warning" @click="showDialog=true">新增员工</el-button>
         </template>
       </tool-bar>
       <el-table
@@ -54,13 +54,13 @@
           </template>
         </el-table-column>
         <el-table-column label="操作" sortable="" fixed="right" width="280">
-          <template>
+          <template slot-scope="{ row }">
             <el-button type="text" size="small">查看</el-button>
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
             <el-button type="text" size="small">角色</el-button>
-            <el-button type="text" size="small">删除</el-button>
+            <el-button type="text" size="small" @click="deleteEmployee(row.id)">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -76,19 +76,22 @@
         />
       </el-row>
     </div>
+    <AddEmployee :is-show-dialog.sync="showDialog" />
   </div>
 </template>
 
 <script>
 
-import { getEmployeeList } from '@/api/employees'
+import { delEmployee, getEmployeeList } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
-import item from '@/layout/components/Sidebar/Item'
+import { Message } from 'element-ui'
+import AddEmployee from '@/views/employees/components/add-employee'
 
 export default {
-  components: {},
+  components: { AddEmployee },
   data() {
     return {
+      showDialog: false,
       list: [],
       page: {
         page: 1, // 当前页码
@@ -105,7 +108,6 @@ export default {
       const { rows, total } = await getEmployeeList(this.page)
       this.list = rows
       this.total = total
-      console.log(this.list)
     },
     changeCurrent(page) {
       this.page.page = page
@@ -116,9 +118,17 @@ export default {
       this.page.size = size
       this.getEmployeeList()
     },
+    // 员工状态
     formatter(row, column, cellValue) {
       const currentData = EmployeeEnum.hireType.find(item => item.id === cellValue)?.value
       return currentData || '未知'
+    },
+    //  删除员工
+    async deleteEmployee(id) {
+      await this.$confirm('您确定删除该员工吗')
+      await delEmployee(id)
+      Message.success('删除成功')
+      await this.getEmployeeList()
     }
   }
 }
