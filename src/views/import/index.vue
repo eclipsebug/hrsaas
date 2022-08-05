@@ -1,5 +1,5 @@
 <template>
-  <UploadExcel :on-success="onSuccess" />
+  <UploadExcel :on-success="onSuccess"/>
 </template>
 
 <script>
@@ -52,3 +52,4 @@ export default {
   }
 }
 </script>
+

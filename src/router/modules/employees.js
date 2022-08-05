@@ -16,7 +16,17 @@ export default {
 			icon: 'people'
 			
 		}
-	}]
+		
+	}, {
+		path: 'detail/:id',
+		component: () => import('@/views/employees/components/detail'),
+		hidden: true, // 隐藏在左侧菜单中
+		meta: {
+			title: '员工详情'
+			
+		}
+	}
+	]
 }
 
 // 当你的访问地址 是 /employees的时候 layout组件会显示 此时 你的二级路由的默认组件  也会显示
