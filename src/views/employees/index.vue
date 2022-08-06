@@ -72,7 +72,7 @@
             <el-button type="text" size="small">转正</el-button>
             <el-button type="text" size="small">调岗</el-button>
             <el-button type="text" size="small">离职</el-button>
-            <el-button type="text" size="small">角色</el-button>
+            <el-button type="text" size="small" @click="editRole(row.id)">角色</el-button>
             <el-button type="text" size="small" @click="deleteEmployee(row.id)">删除</el-button>
           </template>
         </el-table-column>
@@ -95,6 +95,7 @@
         <canvas ref="Canvas"/>
       </el-row>
     </el-dialog>
+    <AssignRole :currentId="currentId" :show-dialog.sync="showDialog2" ref="assignRoleRef"></AssignRole>
   </div>
 </template>
 
@@ -115,14 +116,17 @@ import { delEmployee, getEmployeeList } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
 import { Message } from 'element-ui'
 import AddEmployee from '@/views/employees/components/add-employee'
-import * as QrCode from 'qrcode'    //生成二维码插件
+import * as QrCode from 'qrcode'
+import AssignRole from '@/views/employees/components/assign-role'    //生成二维码插件
 
 export default {
-  components: { AddEmployee },
+  components: { AssignRole, AddEmployee },
   data() {
     return {
       showDialog: false,
       showAvatar: false,
+      showDialog2: false,
+      currentId: null,
       list: [],
       page: {
         page: 1, // 当前页码
@@ -135,6 +139,12 @@ export default {
     this.getEmployeeList()
   },
   methods: {
+    //编辑角色
+    editRole(id) {
+      this.showDialog2 = true
+      this.currentId = id   //传递给子组件的当前项id
+      this.$refs.assignRoleRef.getUserDetailById(id)
+    },
     async showQrCode(url) {
       this.showAvatar = true
       try {
