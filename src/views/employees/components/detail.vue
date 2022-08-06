@@ -96,6 +96,7 @@ export default {
     async upDateUserInfo() {
       await this.$refs.formRef.validate()
       try {
+
         await saveUserDetailById({
           ...this.formData,
           password: this.formData.password2

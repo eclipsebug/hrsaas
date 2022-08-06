@@ -25,6 +25,19 @@
             label="姓名"
             width="180"
         />
+        <!--        头像-->
+        <el-table-column
+            label="头像"
+        >
+          <template v-slot="{row}">
+            <el-row type="flex" justify="center">
+              <el-avatar :src="row.staffPhoto" style="width: 80px; height: 80px;" @click.native="showQrCode(row.staffPhoto)">
+                <img src="@/assets/common/bigUserHeader.png" alt="默认图片">
+              </el-avatar>
+            </el-row>
+
+          </template>
+        </el-table-column>
         <el-table-column
             prop="workNumber"
             label="工号"
@@ -77,6 +90,11 @@
       </el-row>
     </div>
     <AddEmployee :is-show-dialog.sync="showDialog"/>
+    <el-dialog title="二维码" :visible.sync="showAvatar" @opened="showQrCode" @close="imgUrl=''">
+      <el-row type="flex" justify="center">
+        <canvas ref="Canvas"/>
+      </el-row>
+    </el-dialog>
   </div>
 </template>
 
@@ -97,12 +115,14 @@ import { delEmployee, getEmployeeList } from '@/api/employees'
 import EmployeeEnum from '@/api/constant/employees'
 import { Message } from 'element-ui'
 import AddEmployee from '@/views/employees/components/add-employee'
+import * as QrCode from 'qrcode'    //生成二维码插件
 
 export default {
   components: { AddEmployee },
   data() {
     return {
       showDialog: false,
+      showAvatar: false,
       list: [],
       page: {
         page: 1, // 当前页码
@@ -115,6 +135,16 @@ export default {
     this.getEmployeeList()
   },
   methods: {
+    async showQrCode(url) {
+      this.showAvatar = true
+      try {
+        await this.$nextTick(() => {
+          QrCode.toCanvas(this.$refs.Canvas, url) // 将地址转化成二维码
+        })
+      } catch (e) {
+        console.log(e)
+      }
+    },
     async exportToExcel() {
       const { export_json_to_excel } = await import(
           /*webpackChunkName:'export2Excel'*/
@@ -142,7 +172,6 @@ export default {
       this.getEmployeeList()
     },
     SizeChange(size) {
-      console.log(size)
       this.page.size = size
       this.getEmployeeList()
     },

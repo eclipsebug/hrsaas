@@ -8,7 +8,7 @@
 
     <input ref="excel-upload-input" class="excel-upload-input" type="file" accept=".xlsx, .xls" @change="handleClick">
     <div class="drop" @drop="handleDrop" @dragover="handleDragover" @dragenter="handleDragover">
-      <i class="el-icon-upload" />
+      <i class="el-icon-upload"/>
       <span>将文件拖到此处</span>
     </div>
   </div>

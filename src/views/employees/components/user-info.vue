@@ -1,5 +1,12 @@
 <template>
   <div class="user-info">
+    <el-row type="flex" justify="end">
+      <el-tooltip class="item" effect="dark" content="打印个人信息" placement="bottom-end">
+        <router-link :to="`/employees/print/${userId}?type=personal`">
+          <i class="el-icon-printer"></i>
+        </router-link>
+      </el-tooltip>
+    </el-row>
     <!-- 个人信息 -->
     <el-form label-width="220px">
       <!-- 工号 入职时间 -->
@@ -57,7 +64,9 @@
       <el-row class="inline-info">
         <el-col :span="12">
           <el-form-item label="员工头像">
+            <!-- 员工照片 -->
             <!-- 放置上传图片 -->
+            <ImageUpload ref="imgUploadRef"/>
 
           </el-form-item>
         </el-col>
@@ -87,9 +96,9 @@
         </el-form-item>
         <!-- 个人头像 -->
         <!-- 员工照片 -->
-
         <el-form-item label="员工照片">
-          <!-- 放置上传图片 -->
+          <ImageUpload ref="personRef"/>
+
         </el-form-item>
         <el-form-item label="国家/地区">
           <el-select v-model="formData.nationalArea" class="inputW2">
@@ -284,11 +293,16 @@
 <script>
 import EmployeeEnum from '@/api/constant/employees'
 import { getUserDetailById } from '@/api/user'
-import { getPersonalDetail, updatePersonal } from '@/api/employees'
+import { getPersonalDetail, saveUserDetailById, updatePersonal } from '@/api/employees'
 import { Message } from 'element-ui'
+import ImageUpload from '@/components/ImageUpload'
+import item from '@/layout/components/Sidebar/Item'
 
 export default {
   name: 'UserInfo',
+  components: {
+    ImageUpload
+  },
   data() {
     return {
       userId: this.$route.params.id,
@@ -367,18 +381,36 @@ export default {
     //获取上半部分的数据
     async getUserDetailById() {
       this.userInfo = await getUserDetailById(this.userId)
+      //用户头像
+      this.$refs.imgUploadRef.fileList = [{
+        url: this.userInfo.staffPhoto,
+        upload: true
+      }]
     },
     //获取下半部分的数据
     async getPersonalDetail() {
       this.formData = await getPersonalDetail(this.userId)
+      this.$refs.personRef.fileList = [{
+        url: this.formData.staffPhoto,
+        upload: true
+      }]
     },
     //更新员工个人信息
     async saveUser() {
       try {
-        await updatePersonal({
+        const fileList = this.$refs.imgUploadRef.fileList
+        console.log(fileList)
+        if (fileList.some(item => !item.upload)) {
+          this.$message.warning('图片没有上传完成')
+          return
+        }
+        //保存用户的上半部分信息
+        await saveUserDetailById({
           ...this.userInfo,
-          userId: this.userId
+          userId: this.userId,
+          staffPhoto: fileList?.[0]?.url
         })
+
         Message.success('更新员工个人信息成功')
       } catch (e) {
         Message.error(e.message || '更新员工个人信息失败')
@@ -387,12 +419,19 @@ export default {
 
     //    更新基础信息信息成功
     async savePersonal() {
+      const fileList = this.$refs.personRef.fileList
+      if (fileList.some(item => !item.upload)) {
+        this.$message.warning('图片没有上传完成')
+        return
+      }
       await updatePersonal({
-        ...this.formData
+        ...this.formData,
+        staffPhoto: fileList?.[0]?.url
+
       })
       Message.success('更新基础信息信息成功')
 
-    },
+    }
   }
 }
 
