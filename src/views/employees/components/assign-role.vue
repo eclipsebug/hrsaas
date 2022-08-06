@@ -46,6 +46,7 @@ export default {
     //关闭弹层
     close() {
       this.$emit('update:show-dialog', false)
+      this.roleIds = []
     },
     //获取所有角色
     async getRoleList() {

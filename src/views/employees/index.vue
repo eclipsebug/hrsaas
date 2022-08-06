@@ -126,7 +126,7 @@ export default {
       showDialog: false,
       showAvatar: false,
       showDialog2: false,
-      currentId: null,
+      currentId: '',
       list: [],
       page: {
         page: 1, // 当前页码
@@ -140,10 +140,11 @@ export default {
   },
   methods: {
     //编辑角色
-    editRole(id) {
-      this.showDialog2 = true
+    async editRole(id) {
       this.currentId = id   //传递给子组件的当前项id
-      this.$refs.assignRoleRef.getUserDetailById(id)
+      await this.$refs.assignRoleRef.getUserDetailById(id)  //请求数据
+      this.showDialog2 = true
+
     },
     async showQrCode(url) {
       this.showAvatar = true
