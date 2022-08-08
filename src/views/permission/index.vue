@@ -116,7 +116,6 @@ export default {
     //初始化获取所有初始数据
     async getPermissionList() {
       const res = await getPermissionList()
-      console.log(res)
       this.list = tranListToTreeData(res, '0')
     },
     //依据pid和类型判断是否添加或者是编辑
@@ -127,7 +126,6 @@ export default {
     },
     //编辑
     async editPermission(id) {
-      console.log(1)
       // 根据获取id获取详情
       this.formData = await getPermissionDetail(id)
       this.showDialog = true

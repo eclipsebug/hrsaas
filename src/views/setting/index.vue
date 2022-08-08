@@ -7,33 +7,33 @@
             <el-tab-pane label="角色管理" name="first">
               <el-button size="small" type="primary" icon="el-icon-plus" @click="showDialog=true">新增角色</el-button>
               <el-table
-                border
-                :data="list"
-                highlight-current-row
-                style="width: 100%;   margin-top:20px "
+                  border
+                  :data="list"
+                  highlight-current-row
+                  style="width: 100%;   margin-top:20px "
               >
                 <el-table-column
-                  label="序号"
+                    label="序号"
 
-                  type="index"
-                  width="50"
+                    type="index"
+                    width="50"
                 />
 
                 <el-table-column
-                  property="name"
-                  label="角色描述"
-                  width="120"
+                    property="name"
+                    label="角色描述"
+                    width="120"
                 />
                 <el-table-column
-                  property="description"
-                  label="描述"
+                    property="description"
+                    label="描述"
                 />
                 <el-table-column
-                  property="111"
-                  label="操作"
+                    property="111"
+                    label="操作"
                 >
                   <template v-slot="{row}">
-                    <el-button size="small" type="success">分配权限</el-button>
+                    <el-button size="small" type="success" @click="assignPermissions(row.id)">分配权限</el-button>
                     <el-button size="small" type="primary" @click="edit(row.id)">编辑</el-button>
                     <el-button size="small" type="danger" @click="del(row.id)">删除</el-button>
 
@@ -42,12 +42,12 @@
               </el-table>
               <el-row style="margin-top:20px " type="flex" justify="center">
                 <el-pagination
-                  background
-                  layout="total,prev, pager, next"
-                  :total="total"
-                  :page-size="page.pagesize"
-                  :current-page="page.page"
-                  @current-change="changeCurrent"
+                    background
+                    layout="total,prev, pager, next"
+                    :total="total"
+                    :page-size="page.pagesize"
+                    :current-page="page.page"
+                    @current-change="changeCurrent"
                 />
               </el-row>
 
@@ -55,28 +55,28 @@
             <el-tab-pane label="公司设置" name="second">
 
               <el-alert
-                title="对公司名称、公司地址、营业执照、公司地区的更新，将使得公司资料被重新审核，请谨慎修改"
-                show-icon
-                type="info"
+                  title="对公司名称、公司地址、营业执照、公司地区的更新，将使得公司资料被重新审核，请谨慎修改"
+                  show-icon
+                  type="info"
               />
 
               <el-form>
                 <el-form-item disabled label="公司名称" label-width="102px" style="margin-top: 50px">
-                  <el-input v-model="fromData.name" :disabled="true" style="width: 50%" />
+                  <el-input v-model="fromData.name" :disabled="true" style="width: 50%"/>
                 </el-form-item>
                 <el-form-item disabled label="公司地址" label-width="102px">
-                  <el-input v-model="fromData.companyAddress" :disabled="true" style="width: 50%" />
+                  <el-input v-model="fromData.companyAddress" :disabled="true" style="width: 50%"/>
                 </el-form-item>
                 <el-form-item disabled label="邮箱" label-width="102px">
-                  <el-input v-model="fromData.mailbox" :disabled="true" style="width: 50%" />
+                  <el-input v-model="fromData.mailbox" :disabled="true" style="width: 50%"/>
                 </el-form-item>
                 <el-form-item disabled label="备注" label-width="102px">
                   <el-input
-                    v-model="fromData.remarks"
-                    type="textarea"
-                    :autosize="{ minRows: 2, maxRows: 4}"
-                    style="width: 50%"
-                    :disabled="true"
+                      v-model="fromData.remarks"
+                      type="textarea"
+                      :autosize="{ minRows: 2, maxRows: 4}"
+                      style="width: 50%"
+                      :disabled="true"
                   />
                 </el-form-item>
               </el-form>
@@ -90,10 +90,10 @@
     <el-dialog :title="`${roleFormData.id ? '编辑' : '新增'}`" :visible="showDialog" @close="close">
       <el-form ref="editRef" label-width="120px " :model="roleFormData" :rules="roleRule">
         <el-form-item label="角色" prop="name">
-          <el-input v-model="roleFormData.name" />
+          <el-input v-model="roleFormData.name"/>
         </el-form-item>
         <el-form-item label="描述">
-          <el-input v-model="roleFormData.description" />
+          <el-input v-model="roleFormData.description"/>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -101,18 +101,41 @@
         <el-button type="primary" @click="btnOk">确认</el-button>
       </template>
     </el-dialog>
-
+    <!--    分配权限-->
+    <el-dialog title="分配权限" :visible="assignPermissionsDialog" @close="assignPermissionsClose">
+      <el-tree
+          default-expand-all
+          show-checkbox
+          :props="props"
+          :data="permissionsList"
+          node-key="id"
+          :default-checked-keys="checkedKeys"
+      ></el-tree>
+      <template #footer>
+        <el-button size="mini" @click="assignPermissionsClose">取消</el-button>
+        <el-button size="mini" type="primary" @click="btnPermOK">确认</el-button>
+      </template>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import { addRole, getCompanyInfo, getRoleDetail, getRoleList, updateRole } from '@/api/settings'
+import { addRole, assignPerm, getCompanyInfo, getRoleDetail, getRoleList, updateRole } from '@/api/settings'
 import { Message } from 'element-ui'
+import { getPermissionList } from '@/api/permisson'
+import { tranListToTreeData } from '@/utils'
 
 export default {
   data() {
     return {
       showDialog: false,
+      assignPermissionsDialog: false,
+      permissionsList: [],//树形结构数据
+      checkedKeys: [], //默认选中的
+      currentId: '',
+      props: {
+        label: 'name'
+      },
       roleFormData: {
         name: '',
         description: ''
@@ -127,7 +150,6 @@ export default {
           }
         ]
       },
-
       activeName: 'second',
       list: [], // 承接数组
       page: {
@@ -144,6 +166,35 @@ export default {
     this.getCompanyInfo()
   },
   methods: {
+    //分配权限
+    async assignPermissions(id) {
+      this.assignPermissionsDialog = true
+      this.currentId = id
+      //获取树形权限列表
+      //获取数据 转成树形结构
+      this.permissionsList = tranListToTreeData(await getPermissionList(id), '0')
+      const { permIds } = await getRoleDetail(id) // permIds是当前角色所拥有的权限点数据
+      this.checkedKeys = permIds   //默认选中的keys
+    },
+    //分配权限确认按钮
+    async btnPermOK() {
+      try {
+        await assignPerm({
+          id: this.currentId,
+          permIds: this.checkedKeys
+        })
+        this.$message.success('分配权限成功')
+        this.assignPermissionsClose()
+      } catch (e) {
+        console.log(e)
+        this.$message.error('分配权限失败')
+
+      }
+    },
+    //关闭
+    assignPermissionsClose() {
+      this.assignPermissionsDialog = false
+    },
     handleClick(tab, event) {
       console.log(tab, event)
     },
