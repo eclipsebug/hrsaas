@@ -29,12 +29,11 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'routes'
+      'routes'  //暴露出来的
     ]),
     routes() {
       // return this.$router.options.routes
       return this.$store.getters.routes   //遍历得到新的路由表
-      // return this.routes   //遍历得到新的路由表
     },
     activeMenu() {
       const route = this.$route

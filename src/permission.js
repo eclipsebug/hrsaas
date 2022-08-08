@@ -20,11 +20,12 @@ router.beforeEach(async function(to, from, next) {
 		if (!store.getters.userId) {
 			const res = await store.dispatch(('user/getUserInfo'))
 			//    获取用户资料的action 把 得到的用心里面的路由参数赋值给vuex里面的
+			//res.roles.menus是
 			console.log(res.roles.menus)
 			//routes 筛选之后的结果>>用户拥有权限的动态路由列表
 			const routes = await store.dispatch('permission/filtersRouters', res.roles.menus)
 			//利用路由的addRoutes方法添加筛选后的路由表
-			router.addRoutes(routes)
+			router.addRoutes([...routes, { path: '*', redirect: '/404', hidden: true }])  	// 404 page must be placed at the end !!!
 			//从新进行跳转
 			next(to.path)
 		}

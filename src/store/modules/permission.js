@@ -5,7 +5,6 @@ const state = {
 	//存储当前的用户所有拥有的所有路由权限
 	routes: constantRoutes
 }
-
 const mutations = {
 	//newRoutes动态路由
 	//请求到个人信息的时候，动态路由和静态路由进行合并
@@ -13,7 +12,6 @@ const mutations = {
 		state.routes = [...constantRoutes, ...newRoutes]
 	}
 }
-
 const actions = {
 	filtersRouters(context, menus) {
 		const resRoutes = asyncRoutes.filter(item => {
