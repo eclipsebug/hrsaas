@@ -104,6 +104,7 @@
     <!--    分配权限-->
     <el-dialog title="分配权限" :visible="assignPermissionsDialog" @close="assignPermissionsClose">
       <el-tree
+          ref="assignRef"
           default-expand-all
           show-checkbox
           :props="props"
@@ -178,10 +179,14 @@ export default {
     },
     //分配权限确认按钮
     async btnPermOK() {
+      //通过el-tree上面的方法获取选中的id的key
+      const checkedKeyId = this.$refs.assignRef.getCheckedKeys()
       try {
         await assignPerm({
           id: this.currentId,
-          permIds: this.checkedKeys
+          // permIds: this.checkedKeys
+          permIds: checkedKeyId
+
         })
         this.$message.success('分配权限成功')
         this.assignPermissionsClose()
@@ -194,6 +199,8 @@ export default {
     //关闭
     assignPermissionsClose() {
       this.assignPermissionsDialog = false
+      //组件中选中的key置空
+      this.checkedKeys = []
     },
     handleClick(tab, event) {
       console.log(tab, event)
