@@ -39,7 +39,7 @@
             <el-input v-model="formData.description" style="width:90%"/>
           </el-form-item>
           <el-form-item label="开启">
- 
+
             <el-switch
                 v-model="formData.enVisible"
                 active-value="1"
@@ -60,7 +60,7 @@
 </template>
 
 <script>
-import { addPermission, getPermissionDetail, getPermissionList } from '@/api/permisson'
+import { addPermission, delPermission, getPermissionDetail, getPermissionList, updatePermission } from '@/api/permisson'
 import { tranListToTreeData } from '@/utils'
 
 export default {
@@ -126,13 +126,18 @@ export default {
       this.showDialog = true
     },
     //编辑
-    async editPermission() {
+    async editPermission(id) {
       console.log(1)
       // 根据获取id获取详情
       this.formData = await getPermissionDetail(id)
       this.showDialog = true
     },
-    delPermission() {
+    async delPermission(id) {
+      await this.$confirm('是否删除？')
+      await delPermission(id)
+      this.$message.success('恭喜你删除成功')
+      await this.getPermissionList()
+
     },
     //确定按钮
     async btnOK() {
@@ -141,6 +146,9 @@ export default {
         if (this.formData.id) {
           // await this.editPermission(this.formData)
           //  编辑
+          await updatePermission(this.formData)
+          this.$message.success('编辑成功')
+
         } else {
           await addPermission(this.formData)
           this.$message.success('添加成功')
@@ -148,7 +156,7 @@ export default {
         }
       } catch (e) {
         console.log(e)
-        this.$message.error('添加失败')
+        this.$message.error(this.showText + '失败')
       }
 
       this.close() //关闭弹层
