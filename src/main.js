@@ -31,23 +31,10 @@ for (const key in directives) {
 	Vue.directive(key, directives[key])
 }
 
-import ToolBar from '@/components/ToolBar/index'
+// import ToolBar from '@/components/ToolBar/index'
+//
+// Vue.use(ToolBar)
 
-Vue.use(ToolBar)
-
-//公共组件
-// import PageTools from './PageTools'
-import uploadExcel from '@/components/UploadExcel'
-import ImageUpload from '@/components/ImageUpload'
-
-export default {
-	install(Vue) {
-		// Vue.component('PageTools', PageTools) // 注册工具栏组件
-		Vue.component('UploadExcel', uploadExcel) // 注册导入excel组件
-		//第一个参数 >>组件名称 string，第二个参数的组件的配置对象
-		Vue.component(ImageUpload.name, ImageUpload)
-	}
-}
 // 引入过滤器
 import * as filters from '@/filters/index.js'
 
@@ -76,13 +63,20 @@ for (const key in filters) {
 // set ElementUI lang to EN
 // Vue.use(ElementUI, { locale })
 // 如果想要中文版 element-ui，按如下方式声明
-Vue.use(ElementUI)
+import i18n from '@/utils/lang'
 
+Vue.use(ElementUI, {
+	i18n: (key, value) => i18n.t(key, value)
+})
+import TagsView from '@/components/TagsView'
+
+Vue.component('TagsView', TagsView)
 Vue.config.productionTip = false
 
 new Vue({
 	el: '#app',
 	router,
 	store,
+	i18n,
 	render: h => h(App)
 })

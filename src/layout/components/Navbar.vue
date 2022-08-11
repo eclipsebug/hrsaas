@@ -1,6 +1,6 @@
 <template>
   <div class="navbar">
-    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
+    <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar"/>
 
     <!--    <breadcrumb class="breadcrumb-container" />-->
 
@@ -10,11 +10,18 @@
     </div>
 
     <div class="right-menu">
+      <lang class="right-menu-item"/>
+
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <img v-imgError="defaultImg" :src="staffPhoto" class="user-avatar">
+          <!-- 放置全屏插件 -->
+          <theme-picker class="right-menu-item"/>
+          <!--          全屏-->
+          <ScreenFull class="right-menu-item"/>
+
+          <img :src="staffPhoto" class="user-avatar" alt="">
           <span class="name">{{ name }}</span>
-          <i class="el-icon-caret-bottom" />
+          <i class="el-icon-caret-bottom"/>
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
@@ -26,7 +33,7 @@
             <el-dropdown-item>项目地址</el-dropdown-item>
           </a>
           <a target="_blank" divided href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item />
+            <el-dropdown-item/>
           </a>
           <el-dropdown-item divided @click.native="logout">
             <span style="display:block;">退出登录</span>
@@ -41,11 +48,17 @@
 import { mapGetters, mapActions } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
+import ScreenFull from '@/components/ScreenFull'
+import ThemePicker from '@/components/ThemePicker'
+import Lang from '@/components/lang'
 
 export default {
   components: {
     Breadcrumb,
-    Hamburger
+    Hamburger,
+    ScreenFull,
+    ThemePicker,
+    Lang
   },
   mounted() {
     this.getUserInfo()
@@ -132,26 +145,13 @@ export default {
       outline: none;
     }
 
-    .right-menu-item {
-      display: inline-block;
-      padding: 0 8px;
-      height: 100%;
-      font-size: 18px;
-      color: #5a5e66;
-      vertical-align: text-bottom;
-
-      &.hover-effect {
-        cursor: pointer;
-        transition: background .3s;
-
-        &:hover {
-          background: rgba(0, 0, 0, .025)
-        }
-      }
-    }
 
     .avatar-container {
       margin-right: 30px;
+
+      .right-menu-item {
+        vertical-align: middle;
+      }
 
       .avatar-wrapper {
         display: flex;
@@ -181,6 +181,24 @@ export default {
           font-size: 12px;
         }
       }
+    }
+  }
+}
+
+.right-menu-item {
+  display: inline-block;
+  padding: 0 8px;
+  height: 100%;
+  font-size: 18px;
+  color: #5a5e66;
+  vertical-align: text-bottom;
+
+  &.hover-effect {
+    cursor: pointer;
+    transition: background .3s;
+
+    &:hover {
+      background: rgba(0, 0, 0, .025)
     }
   }
 }
